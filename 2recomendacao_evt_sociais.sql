@@ -35,9 +35,9 @@ CREATE TABLE conversa(
 );
 
 CREATE TABLE participa(
+    id_participa INTEGER PRIMARY KEY AUTOINCREMENT,
     id_evento INT REFERENCES evento(id_evento),
-    id_usuario INT REFERENCES usuario(id_usuario),
-    PRIMARY KEY (id_usuario, id_evento)
+    id_usuario INT REFERENCES usuario(id_usuario)
 );
 
 -- Insert de 15 linhas na tabela 'administrador'
@@ -153,3 +153,101 @@ SELECT * FROM categoria;
 SELECT * FROM usuario;
 SELECT * FROM conversa;
 SELECT * FROM participa;
+
+
+--
+INSERT INTO categoria (nome) VALUES
+('Música'),
+('Esportes'),
+('Tecnologia'),
+('Arte'),
+('Educação');
+--
+INSERT INTO evento (nome, data, local, categoria, id_administrador) VALUES
+('Festival de Música Rock', '2024-06-15', 'Estádio Municipal', 'Música', 1),
+('Maratona da Cidade', '2024-09-20', 'Centro da Cidade', 'Esportes', 1),
+('Expo Tech 2024', '2024-07-10', 'Centro de Convenções', 'Tecnologia', 1),
+('Exposição de Arte Moderna', '2024-08-05', 'Museu de Arte', 'Arte', 1),
+('Workshop de Programação', '2024-11-01', 'Escola de Tecnologia', 'Educação', 1),
+('Feira de Gastronomia', '2024-12-12', 'Parque Central', 'Gastronomia', 1),
+('Conferência de Saúde e Bem-estar', '2024-10-18', 'Auditório Municipal', 'Saúde', 1),
+('Festival de Dança Folclórica', '2024-07-25', 'Teatro Municipal', 'Cultura', 1),
+('Ciclo de Palestras sobre Sustentabilidade', '2024-05-15', 'Universidade Local', 'Sustentabilidade', 1),
+('Competições de Robótica', '2024-04-30', 'Centro Tecnológico', 'Inovação', 1);
+--
+-- Inserir 15 clientes
+INSERT INTO usuario (rua, bairro) VALUES
+('Rua A, 123', 'Centro'),
+('Rua B, 456', 'Jardim das Flores'),
+('Rua C, 789', 'Vila Nova'),
+('Rua D, 321', 'Praia'),
+('Rua E, 654', 'Montanha'),
+('Rua F, 987', 'Centro Histórico'),
+('Rua G, 159', 'Bairro Alto'),
+('Rua H, 753', 'Novo Horizonte'),
+('Rua I, 852', 'Sol Nascente'),
+('Rua J, 246', 'Recanto Verde'),
+('Rua K, 135', 'Jardim Botânico'),
+('Rua L, 864', 'Parque da Cidade'),
+('Rua M, 951', 'Estação'),
+('Rua N, 357', 'Vila dos Pinheiros'),
+('Rua O, 159', 'Lagoa'),
+('Rua P, 753', 'São Miguel');
+--
+CREATE TABLE categoria_favorita (
+    id_usuario INT REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    categoria VARCHAR(20) REFERENCES categoria(nome),
+    PRIMARY KEY (id_usuario, categoria)
+);
+INSERT INTO categoria_favorita (id_usuario, categoria) VALUES
+(1, 'Música'),
+(1, 'Arte'),
+(2, 'Esportes'),
+(2, 'Tecnologia'),
+(3, 'Educação'),
+(3, 'Saúde'),
+(4, 'Gastronomia'),
+(4, 'Cultura'),
+(5, 'Inovação'),
+(5, 'Sustentabilidade'),
+(6, 'Música'),
+(6, 'Esportes'),
+(7, 'Tecnologia'),
+(7, 'Educação'),
+(8, 'Saúde'),
+(8, 'Gastronomia'),
+(9, 'Cultura'),
+(9, 'Inovação'),
+(10, 'Sustentabilidade'),
+(10, 'Música'),
+(11, 'Esportes'),
+(11, 'Arte'),
+(12, 'Tecnologia'),
+(12, 'Saúde'),
+(13, 'Educação'),
+(13, 'Gastronomia'),
+(14, 'Cultura'),
+(14, 'Sustentabilidade'),
+(15, 'Inovação'),
+(15, 'Música');
+--
+INSERT INTO participa (id_evento, id_usuario) VALUES
+(1, 1),  -- Festival de Música Rock: Cliente 1
+(1, 2),  -- Festival de Música Rock: Cliente 2
+(2, 3),  -- Maratona da Cidade: Cliente 3
+(2, 4),  -- Maratona da Cidade: Cliente 4
+(3, 5),  -- Expo Tech 2024: Cliente 5
+(3, 6);  -- Expo Tech 2024: Cliente 6
+--
+CREATE TABLE mensagem (
+    id_mensagem INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_grupo INT REFERENCES conversa(id_grupo),
+    conteudo TEXT,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Você vai ao show de música no Teatro Municipal?');
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Sim, estou muito animado para isso!');
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Ótimo! Você já comprou o ingresso?');
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Ainda não, vou comprar hoje à noite.');
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Legal! Vamos tentar chegar juntos?');
+INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Claro! Podemos nos encontrar na entrada do teatro.');
