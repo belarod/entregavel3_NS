@@ -7,7 +7,7 @@ CREATE TABLE participante(
 
 CREATE TABLE possui(
     sku VARCHAR(8) REFERENCES produto(sku),
-    PRIMARY KEY (sku)
+    PRIMARY KEY (sku),
     id_participante INT REFERENCES participante(id_participante)
 );
 
@@ -29,7 +29,8 @@ CREATE TABLE pesquisa(
 );
 
 CREATE TABLE contem(
-    id_pesquisa INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_contem INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_pesquisa INT REFERENCES pesquisa(id_pesquisa),
     id_pergunta INT REFERENCES pergunta(id_pergunta)
 );
 
@@ -132,16 +133,17 @@ INSERT INTO pergunta (likert, conteudo) VALUES ('5', 'Eu compraria novamente des
 INSERT INTO pergunta (likert, conteudo) VALUES ('1', 'A embalagem do produto estava em boas condições.');
 
 -- Inserir 10 linhas na tabela 'contem'
-INSERT INTO contem (id_pergunta) VALUES (1);
-INSERT INTO contem (id_pergunta) VALUES (2);
-INSERT INTO contem (id_pergunta) VALUES (3);
-INSERT INTO contem (id_pergunta) VALUES (4);
-INSERT INTO contem (id_pergunta) VALUES (5);
-INSERT INTO contem (id_pergunta) VALUES (6);
-INSERT INTO contem (id_pergunta) VALUES (7);
-INSERT INTO contem (id_pergunta) VALUES (8);
-INSERT INTO contem (id_pergunta) VALUES (9);
-INSERT INTO contem (id_pergunta) VALUES (10);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (1, 1);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (1, 2);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (2, 3);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (2, 4);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (3, 5);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (3, 6);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (4, 7);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (4, 8);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (5, 9);
+INSERT INTO contem (id_pesquisa, id_pergunta) VALUES (5, 10);
+
 
 SELECT * FROM participante;
 SELECT * FROM produto;
@@ -150,3 +152,136 @@ SELECT * FROM pesquisa;
 SELECT * FROM pergunta;
 SELECT * FROM responde;
 SELECT * FROM contem;
+
+
+
+--
+ALTER TABLE produto ADD COLUMN data_lancamento DATE;
+INSERT INTO produto (sku, preco, data_lancamento) VALUES
+('PROD01', 29.99, '2024-01-15'),
+('PROD02', 59.99, '2024-02-20'),
+('PROD03', 19.99, '2024-03-10'),
+('PROD04', 49.99, '2024-04-05'),
+('PROD05', 99.99, '2024-05-01'),
+('PROD06', 39.99, '2024-06-15'),
+('PROD07', 89.99, '2024-07-20'),
+('PROD08', 15.99, '2024-08-25'),
+('PROD09', 25.99, '2024-09-30'),
+('PROD10', 45.99, '2024-10-10'),
+('PROD11', 35.99, '2024-11-05'),
+('PROD12', 55.99, '2024-12-12'),
+('PROD13', 75.99, '2025-01-18'),
+('PROD14', 95.99, '2025-02-22'),
+('PROD15', 9.99, '2025-03-15'),
+('PROD16', 17.99, '2025-04-07'),
+('PROD17', 27.99, '2025-05-03'),
+('PROD18', 37.99, '2025-06-21'),
+('PROD19', 47.99, '2025-07-19'),
+('PROD20', 57.99, '2025-08-25');
+--
+INSERT INTO participante (nome, rua, bairro) VALUES
+('Alice Silva', 'Rua A, 123', 'Centro'),
+('Bruno Santos', 'Rua B, 456', 'Jardim das Flores'),
+('Carla Oliveira', 'Rua C, 789', 'Vila Nova'),
+('Daniela Pereira', 'Rua D, 321', 'Bairro Alto'),
+('Eduardo Costa', 'Rua E, 654', 'Praça da Alegria'),
+('Fernanda Lima', 'Rua F, 987', 'Jardim Botânico'),
+('Gustavo Almeida', 'Rua G, 147', 'Vila Verde'),
+('Helena Sousa', 'Rua H, 258', 'Lagoa Azul'),
+('Igor Mendes', 'Rua I, 369', 'Parque dos Sonhos'),
+('Juliana Rocha', 'Rua J, 741', 'Vale do Sol');
+--
+INSERT INTO pergunta (likert, conteudo) VALUES
+('1-5', 'Como você avaliaria a qualidade do produto?'),
+('1-5', 'Quão satisfeito você está com o atendimento ao cliente?'),
+('1-5', 'Qual a probabilidade de você recomendar nosso produto?'),
+('1-5', 'Como você avaliaria o preço em relação à qualidade?'),
+('1-5', 'Você considera o produto fácil de usar?'),
+('1-5', 'O produto atendeu suas expectativas?'),
+('1-5', 'Você ficaria interessado em comprar outro produto nosso?'),
+('1-5', 'Como você avaliaria a variedade de produtos disponíveis?'),
+('N/A', 'O que você mais gostou no produto?'),
+('N/A', 'Quais melhorias você sugeriria para o produto?');
+--
+INSERT INTO pesquisa (data, nome) VALUES
+('2024-11-10', 'Pesquisa de Satisfação do Cliente');
+--
+WITH PerguntasAleatorias AS (
+    SELECT id_pergunta
+    FROM pergunta
+    ORDER BY RANDOM()
+    LIMIT 5
+)
+INSERT INTO contem (id_pesquisa, id_pergunta)
+SELECT 13, id_pergunta
+FROM PerguntasAleatorias;
+--
+CREATE TABLE resposta (
+    id_resposta INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_participante INT,
+    id_pergunta INT,
+    resposta INT CHECK (resposta >= 1 AND resposta <= 5),
+    FOREIGN KEY (id_participante) REFERENCES participante(id_participante) ON DELETE CASCADE,
+    FOREIGN KEY (id_pergunta) REFERENCES pergunta(id_pergunta) ON DELETE CASCADE,
+    UNIQUE (id_participante, id_pergunta)
+);
+INSERT INTO resposta (id_participante, id_pergunta, resposta) VALUES
+(1, 1, ABS(RANDOM() % 5) + 1),
+(1, 2, ABS(RANDOM() % 5) + 1),
+(1, 3, ABS(RANDOM() % 5) + 1),
+(1, 4, ABS(RANDOM() % 5) + 1),
+(1, 5, ABS(RANDOM() % 5) + 1),
+
+(2, 1, ABS(RANDOM() % 5) + 1),
+(2, 2, ABS(RANDOM() % 5) + 1),
+(2, 3, ABS(RANDOM() % 5) + 1),
+(2, 4, ABS(RANDOM() % 5) + 1),
+(2, 5, ABS(RANDOM() % 5) + 1),
+
+(3, 1, ABS(RANDOM() % 5) + 1),
+(3, 2, ABS(RANDOM() % 5) + 1),
+(3, 3, ABS(RANDOM() % 5) + 1),
+(3, 4, ABS(RANDOM() % 5) + 1),
+(3, 5, ABS(RANDOM() % 5) + 1),
+
+(4, 1, ABS(RANDOM() % 5) + 1),
+(4, 2, ABS(RANDOM() % 5) + 1),
+(4, 3, ABS(RANDOM() % 5) + 1),
+(4, 4, ABS(RANDOM() % 5) + 1),
+(4, 5, ABS(RANDOM() % 5) + 1),
+
+(5, 1, ABS(RANDOM() % 5) + 1),
+(5, 2, ABS(RANDOM() % 5) + 1),
+(5, 3, ABS(RANDOM() % 5) + 1),
+(5, 4, ABS(RANDOM() % 5) + 1),
+(5, 5, ABS(RANDOM() % 5) + 1),
+
+(6, 1, ABS(RANDOM() % 5) + 1),
+(6, 2, ABS(RANDOM() % 5) + 1),
+(6, 3, ABS(RANDOM() % 5) + 1),
+(6, 4, ABS(RANDOM() % 5) + 1),
+(6, 5, ABS(RANDOM() % 5) + 1);
+--
+INSERT INTO pesquisa (data, nome)
+VALUES ('2024-11-05', 'Pesquisa de Satisfação - Segunda Rodada');
+INSERT INTO contem (id_pesquisa, id_pergunta)
+SELECT 17, id_pergunta
+FROM contem
+WHERE id_pesquisa = 1;
+--falta ultimo da pesquisa(abaixo)
+INSERT INTO resposta (id_participante, id_pergunta, resposta)
+SELECT p.id_participante, q.id_pergunta, ABS(RANDOM() % 5) + 1 AS resposta
+FROM participante p
+CROSS JOIN pergunta q
+WHERE p.id_participante != 6  -- Exclui o último participante
+AND p.id_participante IN (
+    SELECT id_participante
+    FROM responde
+    WHERE id_pesquisa = 1  -- Apenas os participantes da pesquisa anterior
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM resposta r
+    WHERE r.id_participante = p.id_participante
+    AND r.id_pergunta = q.id_pergunta
+);

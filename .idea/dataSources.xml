@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/dbs/db_recomendacao_evt_sociais.sqlite</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="db_pesquisa.sqlite" uuid="41ef25e1-8b12-49e1-b3e5-78f55f137ba9">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/dbs/db_pesquisa.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
