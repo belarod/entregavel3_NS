@@ -155,7 +155,7 @@ SELECT * FROM contem;
 
 
 
---
+--Cadastre 20 produtos c suas datas de lancamento
 ALTER TABLE produto ADD COLUMN data_lancamento DATE;
 INSERT INTO produto (sku, preco, data_lancamento) VALUES
 ('PROD01', 29.99, '2024-01-15'),
@@ -178,7 +178,10 @@ INSERT INTO produto (sku, preco, data_lancamento) VALUES
 ('PROD18', 37.99, '2025-06-21'),
 ('PROD19', 47.99, '2025-07-19'),
 ('PROD20', 57.99, '2025-08-25');
---
+
+
+
+--Cadastre 10 participantes
 INSERT INTO participante (nome, rua, bairro) VALUES
 ('Alice Silva', 'Rua A, 123', 'Centro'),
 ('Bruno Santos', 'Rua B, 456', 'Jardim das Flores'),
@@ -190,7 +193,10 @@ INSERT INTO participante (nome, rua, bairro) VALUES
 ('Helena Sousa', 'Rua H, 258', 'Lagoa Azul'),
 ('Igor Mendes', 'Rua I, 369', 'Parque dos Sonhos'),
 ('Juliana Rocha', 'Rua J, 741', 'Vale do Sol');
---
+
+
+
+--Cadastre 10 perguntas genericas (8 likert e 2 txt)
 INSERT INTO pergunta (likert, conteudo) VALUES
 ('1-5', 'Como você avaliaria a qualidade do produto?'),
 ('1-5', 'Quão satisfeito você está com o atendimento ao cliente?'),
@@ -202,10 +208,16 @@ INSERT INTO pergunta (likert, conteudo) VALUES
 ('1-5', 'Como você avaliaria a variedade de produtos disponíveis?'),
 ('N/A', 'O que você mais gostou no produto?'),
 ('N/A', 'Quais melhorias você sugeriria para o produto?');
---
+
+
+
+--Crie uma nova pesquisa
 INSERT INTO pesquisa (data, nome) VALUES
 ('2024-11-10', 'Pesquisa de Satisfação do Cliente');
---
+
+
+
+--Vincule 5 perguntas aleatorias nessa pesquisa
 WITH PerguntasAleatorias AS (
     SELECT id_pergunta
     FROM pergunta
@@ -215,7 +227,10 @@ WITH PerguntasAleatorias AS (
 INSERT INTO contem (id_pesquisa, id_pergunta)
 SELECT 13, id_pergunta
 FROM PerguntasAleatorias;
---
+
+
+
+--Insira 6 respostas aleatorias para 6 participantes em todas 5 perguntas da pesquisa
 CREATE TABLE resposta (
     id_resposta INTEGER PRIMARY KEY AUTOINCREMENT,
     id_participante INT,
@@ -261,27 +276,3 @@ INSERT INTO resposta (id_participante, id_pergunta, resposta) VALUES
 (6, 3, ABS(RANDOM() % 5) + 1),
 (6, 4, ABS(RANDOM() % 5) + 1),
 (6, 5, ABS(RANDOM() % 5) + 1);
---
-INSERT INTO pesquisa (data, nome)
-VALUES ('2024-11-05', 'Pesquisa de Satisfação - Segunda Rodada');
-INSERT INTO contem (id_pesquisa, id_pergunta)
-SELECT 17, id_pergunta
-FROM contem
-WHERE id_pesquisa = 1;
---falta ultimo da pesquisa(abaixo)
-INSERT INTO resposta (id_participante, id_pergunta, resposta)
-SELECT p.id_participante, q.id_pergunta, ABS(RANDOM() % 5) + 1 AS resposta
-FROM participante p
-CROSS JOIN pergunta q
-WHERE p.id_participante != 6  -- Exclui o último participante
-AND p.id_participante IN (
-    SELECT id_participante
-    FROM responde
-    WHERE id_pesquisa = 1  -- Apenas os participantes da pesquisa anterior
-)
-AND NOT EXISTS (
-    SELECT 1
-    FROM resposta r
-    WHERE r.id_participante = p.id_participante
-    AND r.id_pergunta = q.id_pergunta
-);

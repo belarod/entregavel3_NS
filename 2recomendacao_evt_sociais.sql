@@ -155,14 +155,18 @@ SELECT * FROM conversa;
 SELECT * FROM participa;
 
 
---
+
+--Insira 5 categorias
 INSERT INTO categoria (nome) VALUES
 ('Música'),
 ('Esportes'),
 ('Tecnologia'),
 ('Arte'),
 ('Educação');
---
+
+
+
+--Cadastre 10 eventos, com uma categoria para cada
 INSERT INTO evento (nome, data, local, categoria, id_administrador) VALUES
 ('Festival de Música Rock', '2024-06-15', 'Estádio Municipal', 'Música', 1),
 ('Maratona da Cidade', '2024-09-20', 'Centro da Cidade', 'Esportes', 1),
@@ -174,8 +178,10 @@ INSERT INTO evento (nome, data, local, categoria, id_administrador) VALUES
 ('Festival de Dança Folclórica', '2024-07-25', 'Teatro Municipal', 'Cultura', 1),
 ('Ciclo de Palestras sobre Sustentabilidade', '2024-05-15', 'Universidade Local', 'Sustentabilidade', 1),
 ('Competições de Robótica', '2024-04-30', 'Centro Tecnológico', 'Inovação', 1);
---
--- Inserir 15 clientes
+
+
+
+-- Inserir 15 clientes que possuem 2 categorias favoritas
 INSERT INTO usuario (rua, bairro) VALUES
 ('Rua A, 123', 'Centro'),
 ('Rua B, 456', 'Jardim das Flores'),
@@ -193,7 +199,6 @@ INSERT INTO usuario (rua, bairro) VALUES
 ('Rua N, 357', 'Vila dos Pinheiros'),
 ('Rua O, 159', 'Lagoa'),
 ('Rua P, 753', 'São Miguel');
---
 CREATE TABLE categoria_favorita (
     id_usuario INT REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     categoria VARCHAR(20) REFERENCES categoria(nome),
@@ -230,7 +235,10 @@ INSERT INTO categoria_favorita (id_usuario, categoria) VALUES
 (14, 'Sustentabilidade'),
 (15, 'Inovação'),
 (15, 'Música');
---
+
+
+
+--Em 3 eventos, adiciona ao menos 2 clientes que participam em cada evento
 INSERT INTO participa (id_evento, id_usuario) VALUES
 (1, 1),  -- Festival de Música Rock: Cliente 1
 (1, 2),  -- Festival de Música Rock: Cliente 2
@@ -238,7 +246,10 @@ INSERT INTO participa (id_evento, id_usuario) VALUES
 (2, 4),  -- Maratona da Cidade: Cliente 4
 (3, 5),  -- Expo Tech 2024: Cliente 5
 (3, 6);  -- Expo Tech 2024: Cliente 6
---
+
+
+
+--Insira troca de msg simples entre os que participaram em 1 dos eventos
 CREATE TABLE mensagem (
     id_mensagem INTEGER PRIMARY KEY AUTOINCREMENT,
     id_grupo INT REFERENCES conversa(id_grupo),

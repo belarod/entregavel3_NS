@@ -15,9 +15,9 @@ CREATE TABLE produto(
 );
 
 CREATE TABLE fornece(
+    id_fornece INTEGER PRIMARY KEY AUTOINCREMENT,
     id_fornecedor VARCHAR(14) REFERENCES fornecedor(cnpj),
-    id_produto VARCHAR(8) REFERENCES produto(sku),
-    PRIMARY KEY (id_fornecedor, id_produto)
+    id_produto VARCHAR(8) REFERENCES produto(sku)
 );
 
 CREATE TABLE cliente(
@@ -29,12 +29,12 @@ CREATE TABLE cliente(
 );
 
 CREATE TABLE venda(
+    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
     id_produto VARCHAR(8) REFERENCES produto(sku),
     id_cliente VARCHAR(11) REFERENCES cliente(cpf),
     quantidade INT,
     valor_total FLOAT,
-    data DATE,
-    PRIMARY KEY (id_produto, id_cliente)
+    data DATE
 );
 
 -- Inserir 15 linhas na tabela 'fornecedor'
@@ -117,3 +117,84 @@ SELECT * FROM fornece;
 SELECT * FROM cliente;
 SELECT * FROM venda;
 SELECT * FROM fornecedor;
+
+
+
+--cadastre 10 clientes e 4 fornecedores
+INSERT INTO cliente (cpf, nome, rua, bairro, telefone) VALUES
+('12345678901', 'Carlos Silva', 'Av. Paulista, 1000', 'Bela Vista', '(11) 99888-7777'),
+('23456789012', 'Maria Oliveira', 'Rua dos Três, 500', 'Vila Progresso', '(21) 97654-3210'),
+('34567890123', 'João Santos', 'Rua da Paz, 200', 'Centro', '(41) 98567-4321'),
+('45678901234', 'Ana Costa', 'Rua Verde, 150', 'Jardim Alegre', '(61) 93456-7890'),
+('56789012345', 'Paulo Almeida', 'Av. Rio Branco, 850', 'Centro', '(11) 92345-6789'),
+('67890123456', 'Juliana Pereira', 'Rua das Flores, 300', 'Jardim Europa', '(21) 98877-6543'),
+('78901234567', 'Roberto Souza', 'Rua do Sol, 400', 'Vila Nova', '(31) 92222-3333'),
+('89012345678', 'Mariana Lima', 'Av. Brasil, 1200', 'Centro', '(51) 91111-2222'),
+('90123456789', 'Eduardo Ferreira', 'Rua X, 500', 'Bairro Alegre', '(61) 99999-5555'),
+('01234567890', 'Luciana Rocha', 'Rua Y, 350', 'Vila Santa Clara', '(71) 99888-9999');
+INSERT INTO fornecedor (cnpj, nome, rua, bairro, telefone) VALUES
+('12345555500195', 'Fornecedor A', 'Rua A, 123', 'Centro', '(11) 1234-5678'),
+('66665432000180', 'Fornecedor B', 'Rua B, 456', 'Jardim Paulista', '(11) 9876-5432'),
+('11223377777122', 'Fornecedor C', 'Rua C, 789', 'Vila Progresso', '(21) 2345-6789'),
+('33333788000144', 'Fornecedor D', 'Rua D, 101', 'Bairro Novo', '(31) 3456-7890');
+
+--cadastre 10 produtos com nome, local (gandola/prateleira) preço e quantidade
+INSERT INTO produto (sku, nome, local, quantidade, preco) VALUES
+('PROD001', 'Produto A', 'Gândola', 100, 15.50),
+('PROD002', 'Produto B', 'Prateleira', 200, 25.75),
+('PROD003', 'Produto C', 'Gândola', 150, 35.00),
+('PROD004', 'Produto D', 'Prateleira', 80, 12.99),
+('PROD005', 'Produto E', 'Gândola', 50, 99.90),
+('PROD006', 'Produto F', 'Prateleira', 300, 22.40),
+('PROD007', 'Produto G', 'Gândola', 120, 17.60),
+('PROD008', 'Produto H', 'Prateleira', 60, 49.99),
+('PROD009', 'Produto I', 'Gândola', 200, 5.99),
+('PROD010', 'Produto J', 'Prateleira', 150, 40.00);
+
+--faça um insert na tabela fornece para cada um dos produtos  (passei o sku dos produtos)
+
+INSERT INTO fornece (id_fornecedor, id_produto) VALUES
+('12345678000195', 'P0000001'),
+('23456789000196', 'P0000002'),
+('34567890000197', 'P0000003'),
+('45678901000198', 'P0000004'),
+('56789012000199', 'P0000005'),
+('67890123000100', 'P0000006'),
+('78901234000101', 'P0000007'),
+('89012345000102', 'P0000008'),
+('90123456000103', 'P0000009'),
+('01234567000104', 'P0000010'),
+('12345678000105', 'P0000011'),
+('23456789000106', 'P0000012'),
+('34567890000107', 'P0000013'),
+('45678901000108', 'P0000014'),
+('56789012000109', 'P0000015'),
+('12345555500195', 'P0000016'),
+('66665432000180', 'P0000017'),
+('11223377777122', 'P0000018');
+
+
+--para esses 5 clientes 11122233344 22233344455 33344455566 44455566677 55566677788, simule 1 venda (entre 1 e 3 produtos de quantidade aleatoria, guarde a data e quantidade de produtos e valor total
+INSERT INTO venda (id_produto, id_cliente, quantidade, valor_total, data)
+VALUES
+('P0000001', '11122233344', 2, (SELECT preco * 2 FROM produto WHERE sku = 'P0000001'), '2024-11-05'),
+('P0000002', '11122233344', 1, (SELECT preco * 1 FROM produto WHERE sku = 'P0000002'), '2024-11-05'),
+('P0000003', '22233344455', 1, (SELECT preco * 1 FROM produto WHERE sku = 'P0000003'), '2024-11-05'),
+('P0000004', '22233344455', 1, (SELECT preco * 1 FROM produto WHERE sku = 'P0000004'), '2024-11-05'),
+('P0000005', '22233344455', 1, (SELECT preco * 1 FROM produto WHERE sku = 'P0000005'), '2024-11-05'),
+('P0000006', '33344455566', 1, (SELECT preco * 1 FROM produto WHERE sku = 'P0000006'), '2024-11-05'),
+('P0000007', '33344455566', 2, (SELECT preco * 2 FROM produto WHERE sku = 'P0000007'), '2024-11-05'),
+('P0000008', '44455566677', 3, (SELECT preco * 3 FROM produto WHERE sku = 'P0000008'), '2024-11-05'),
+('P0000009', '55566677788', 2, (SELECT preco * 2 FROM produto WHERE sku = 'P0000009'), '2024-11-05');
+
+--aumente o preço unitario em 10% para os 5 primeiros produtos. essa alteracao nao deve afetar os valores dos produtos ja vendidos
+WITH primeiros_produtos AS (
+    SELECT sku
+    FROM produto
+    ORDER BY sku
+    LIMIT 5
+)
+UPDATE produto
+SET preco = preco * 1.10
+WHERE sku IN (SELECT sku FROM primeiros_produtos);
+

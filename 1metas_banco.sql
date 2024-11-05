@@ -124,7 +124,7 @@ SELECT * FROM avalia;
 
 
 
---
+--Insira 10 funcionarios
 INSERT INTO funcionario (nome, id_meta) VALUES ('Alice Silva', 1);
 INSERT INTO funcionario (nome, id_meta) VALUES ('Bruno Santos', 1);
 INSERT INTO funcionario (nome, id_meta) VALUES ('Carlos Oliveira', 1);
@@ -135,7 +135,10 @@ INSERT INTO funcionario (nome, id_meta) VALUES ('Gabriel Pereira', 1);
 INSERT INTO funcionario (nome, id_meta) VALUES ('Helena Martins', 1);
 INSERT INTO funcionario (nome, id_meta) VALUES ('Igor Souza', 1);
 INSERT INTO funcionario (nome, id_meta) VALUES ('Juliana Mendes', 1);
---
+
+
+
+--Adicione o gestor (autorelacionamento) para 9 funcionarios. O funcionário sem gestor representara o presidente da instituição
 INSERT INTO gestor (nome) VALUES ('Roberto Silva');
 UPDATE funcionario SET id_meta = NULL WHERE nome = 'Alice Silva';
 UPDATE funcionario SET id_meta = NULL WHERE nome = 'Bruno Santos';
@@ -150,7 +153,10 @@ ALTER TABLE funcionario ADD COLUMN id_gestor INT REFERENCES gestor(id_gestor);
 UPDATE funcionario SET id_gestor = 1 WHERE nome IN ('Alice Silva', 'Bruno Santos', 'Carlos Oliveira',
                                                     'Daniela Costa', 'Eduardo Lima', 'Fernanda Alves',
                                                     'Gabriel Pereira', 'Helena Martins', 'Igor Souza');
---
+
+
+
+--Insira SEGUROS, CONTAS, FINANCIAMENTOS E EMPRESTIMOS na tabela categoria
 CREATE TABLE categoria (
     id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(30) NOT NULL UNIQUE
@@ -160,8 +166,10 @@ INSERT INTO categoria (nome) VALUES ('Contas');
 INSERT INTO categoria (nome) VALUES ('Financiamentos');
 INSERT INTO categoria (nome) VALUES ('Empréstimos');
 ALTER TABLE meta ADD COLUMN id_categoria INT REFERENCES categoria(id_categoria);
---
--- Inserir metas para cada funcionário
+
+
+
+-- Inserir metas para cada funcionário (passei lista de 10 funcionarios)
 INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario, id_categoria)
 VALUES
 (10 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 1, 1),  -- Funcionário 1
@@ -174,7 +182,10 @@ VALUES
 (12 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 9 + ABS(RANDOM() % 10), 1 + ABS(RANDOM() % 10), 7, 4),  -- Funcionário 8
 (9 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 8 + ABS(RANDOM() % 10), 0 + ABS(RANDOM() % 10), 8, 1),  -- Funcionário 9
 (14 + ABS(RANDOM() % 10), 6 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 9, 2);  -- Funcionário 10
---
+
+
+
+--Insira a quantidade vendida de cada meta de cada colaborador. Data e quantidade pode ser preenchida aleatoriamente (mas deve ser antes de novembro)
 ALTER TABLE meta ADD COLUMN data DATE;
 INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario, data) VALUES
 (ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 1, '2023-10-01'),  -- Alice Silva
@@ -187,7 +198,10 @@ INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento,
 (ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 8, '2023-10-08'),  -- Helena Martins
 (ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 9, '2023-10-09'),  -- Igor Souza
 (ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 10, '2023-10-10');  -- Juliana Mendes
---
+
+
+
+--Insira uma nota p cada meta, adicionando uma nota de 0 a 100 calculada automaticamente c base na qntd vendida e obj da meta. data da avaliaçao tb deve ser armazenada (aleatoria, porem em janeiro)
 ALTER TABLE avalia
 ADD data DATE;
 INSERT INTO avalia (id_meta, id_gestor, data)

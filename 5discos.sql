@@ -19,12 +19,14 @@ CREATE TABLE cliente(
     nome VARCHAR(30)
 );
 
-CREATE TABLE turne(
+CREATE TABLE turne (
     id_turne INTEGER PRIMARY KEY AUTOINCREMENT,
     data DATE,
-    banda VARCHAR(30),
-    nome VARCHAR(30)
+    nome VARCHAR(30),
+    id_artista INT,
+    CONSTRAINT fk_artista FOREIGN KEY (id_artista) REFERENCES artista(id_artista)
 );
+
 
 CREATE TABLE acompanha(
     id_cliente INT REFERENCES cliente(id_cliente),
@@ -65,22 +67,22 @@ INSERT INTO cliente (nome) VALUES ('Mona Ribeiro');
 INSERT INTO cliente (nome) VALUES ('Nina Castro');
 INSERT INTO cliente (nome) VALUES ('Oscar Fernandes');
 
--- Inserir 15 linhas na tabela 'turne'
-INSERT INTO turne (data, banda, nome) VALUES ('2024-10-01', 'Banda A', 'Turnê Rock 2024');
-INSERT INTO turne (data, banda, nome) VALUES ('2024-10-10', 'Banda B', 'Turnê Pop Mania');
-INSERT INTO turne (data, banda, nome) VALUES ('2024-11-05', 'Banda C', 'Turnê Jazz Fusion');
-INSERT INTO turne (data, banda, nome) VALUES ('2024-11-15', 'Banda D', 'Turnê Clássica');
-INSERT INTO turne (data, banda, nome) VALUES ('2024-12-01', 'Banda E', 'Turnê Indie Rock');
-INSERT INTO turne (data, banda, nome) VALUES ('2024-12-10', 'Banda F', 'Turnê Electrónica');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-01-05', 'Banda G', 'Turnê Blues Revival');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-01-15', 'Banda H', 'Turnê Folk');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-02-01', 'Banda I', 'Turnê Heavy Metal');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-02-10', 'Banda J', 'Turnê Experimental');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-03-05', 'Banda K', 'Turnê Tradicional');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-03-15', 'Banda L', 'Turnê Modern Jazz');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-04-01', 'Banda M', 'Turnê Hip Hop');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-04-10', 'Banda N', 'Turnê World Music');
-INSERT INTO turne (data, banda, nome) VALUES ('2025-05-01', 'Banda O', 'Turnê Reggae');
+INSERT INTO turne (data, nome, id_artista) VALUES
+('2024-11-10', 'No Filter Tour 2024', 1),
+('2024-11-12', 'BTS World Tour 2024', 2),
+('2024-11-14', 'Music of the Spheres Tour 2024', 3),
+('2024-11-16', 'Eras Tour 2024', 4),
+('2024-11-18', 'Subtract World Tour 2024', 5),
+('2024-11-20', 'Sweetener World Tour 2024', 6),
+('2024-11-22', 'Mercury World Tour 2024', 7),
+('2024-11-24', 'Happier Than Ever Tour 2024', 8),
+('2024-11-26', 'After Hours Tour 2024', 9),
+('2024-11-28', 'El Dorado World Tour 2024', 10),
+('2024-11-30', 'Donda Tour 2024', 11),
+('2024-12-02', 'Certified Lover Boy Tour 2024', 12),
+('2024-12-04', 'Future Nostalgia Tour 2024', 13),
+('2024-12-06', 'The Hollywood Dream Tour 2024', 14),
+('2024-12-08', 'Divide World Tour 2024', 5);
 
 -- Inserir 15 linhas na tabela 'review'
 INSERT INTO review (tipo, likert, comentario, id_cliente, id_album, id_turne) VALUES ('Álbum', '5', 'Ótimo álbum! Muito bom!', 1, 1, NULL);
@@ -116,3 +118,125 @@ SELECT * FROM cliente;
 SELECT * FROM turne;
 SELECT * FROM review;
 SELECT * FROM acompanha;
+
+
+
+--insira 10 artistas na tabela artista
+CREATE TABLE artista (
+    id_artista INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome VARCHAR(50)
+);
+INSERT INTO artista (nome) VALUES
+('The Rolling Stones'),
+('BTS'),
+('Coldplay'),
+('Taylor Swift'),
+('Ed Sheeran'),
+('Ariana Grande'),
+('Imagine Dragons'),
+('Billie Eilish'),
+('The Weeknd'),
+('Shakira');
+
+--cadastre 15 albuns, cada um podendo ser um ou mais tipo de midia (cd fita vinil)
+INSERT INTO album (nome, categoria) VALUES
+('Album 1', 'CD'),
+('Album 1', 'Vinil'),
+('Album 2', 'CD'),
+('Album 3', 'Fita'),
+('Album 3', 'CD'),
+('Album 4', 'Vinil'),
+('Album 5', 'CD'),
+('Album 6', 'Fita'),
+('Album 6', 'Vinil'),
+('Album 7', 'CD'),
+('Album 8', 'Vinil'),
+('Album 9', 'Fita'),
+('Album 9', 'CD'),
+('Album 10', 'Vinil'),
+('Album 11', 'Fita');
+
+--insira 10 clientes
+INSERT INTO cliente (nome) VALUES
+('Carlos Silva'),
+('Ana Oliveira'),
+('Mariana Costa'),
+('João Pereira'),
+('Luís Santos'),
+('Ricardo Lima'),
+('Fernanda Rocha'),
+('Patrícia Almeida'),
+('Gabriel Souza'),
+('Rafaela Martins');
+
+--faça a review de 5 albuns na visao de 3 clientes (cada cliente avalia 5 albuns dando nota de 1-5 likert, nao precisa de comentario
+INSERT INTO review (tipo, likert, comentario, id_cliente, id_album, id_turne)
+VALUES
+    ('Avaliação', 5, NULL, 1, 1, 1),
+    ('Avaliação', 4, NULL, 1, 2, 2),
+    ('Avaliação', 3, NULL, 1, 3, 3),
+    ('Avaliação', 2, NULL, 1, 4, 4),
+    ('Avaliação', 1, NULL, 1, 5, 5),
+    ('Avaliação', 3, NULL, 2, 1, 1),
+    ('Avaliação', 5, NULL, 2, 2, 2),
+    ('Avaliação', 4, NULL, 2, 3, 3),
+    ('Avaliação', 1, NULL, 2, 4, 4),
+    ('Avaliação', 2, NULL, 2, 5, 5),
+    ('Avaliação', 2, NULL, 3, 1, 1),
+    ('Avaliação', 1, NULL, 3, 2, 2),
+    ('Avaliação', 5, NULL, 3, 3, 3),
+    ('Avaliação', 4, NULL, 3, 4, 4),
+    ('Avaliação', 3, NULL, 3, 5, 5);
+
+--dentre os 5 albuns avaliados, escolha 3 para ser avaliados por mais 2 clientes diferentes (ao final, 3 albuns terao no minimo 3 avaliacoes
+INSERT INTO review (tipo, likert, comentario, id_cliente, id_album)
+VALUES
+    ('Avaliação', 5, NULL, 4, 1), -- Cliente 4, Álbun A, nota 5
+    ('Avaliação', 3, NULL, 4, 2), -- Cliente 4, Álbun B, nota 3
+    ('Avaliação', 4, NULL, 4, 3), -- Cliente 4, Álbun C, nota 4
+    ('Avaliação', 2, NULL, 5, 1), -- Cliente 5, Álbun A, nota 2
+    ('Avaliação', 1, NULL, 5, 2), -- Cliente 5, Álbun B, nota 1
+    ('Avaliação', 3, NULL, 5, 3); -- Cliente 5, Álbun C, nota 3
+
+--para 2 artistas, cadastre suas turnes c 5 shows cada
+INSERT INTO turne (data, nome, id_artista)
+VALUES
+    ('2024-12-01', 'Turnê A - Show 1', 1),
+    ('2024-12-05', 'Turnê A - Show 2', 1),
+    ('2024-12-10', 'Turnê A - Show 3', 1),
+    ('2024-12-15', 'Turnê A - Show 4', 1),
+    ('2024-12-20', 'Turnê A - Show 5', 1),
+    ('2024-12-02', 'Turnê B - Show 1', 2),
+    ('2024-12-06', 'Turnê B - Show 2', 2),
+    ('2024-12-11', 'Turnê B - Show 3', 2),
+    ('2024-12-16', 'Turnê B - Show 4', 2),
+    ('2024-12-21', 'Turnê B - Show 5', 2);
+
+--faca a avaliacao de 2 shows de cada artista na visao de 2 clientes
+INSERT INTO review (tipo, likert, comentario, id_cliente, id_album, id_turne)
+VALUES
+    ('Avaliação', 5, NULL, 1, 1, 1),
+    ('Avaliação', 4, NULL, 2, 2, 1),
+    ('Avaliação', 3, NULL, 3, 3, 1),
+    ('Avaliação', 4, NULL, 4, 4, 1),
+    ('Avaliação', 5, NULL, 5, 5, 1),
+    ('Avaliação', 3, NULL, 1, 1, 2),
+    ('Avaliação', 4, NULL, 2, 2, 2),
+    ('Avaliação', 2, NULL, 3, 3, 2),
+    ('Avaliação', 3, NULL, 4, 4, 2),
+    ('Avaliação', 4, NULL, 5, 5, 2),
+    ('Avaliação', 4, NULL, 1, 1, 3),
+    ('Avaliação', 5, NULL, 2, 2, 3),
+    ('Avaliação', 3, NULL, 3, 3, 3),
+    ('Avaliação', 2, NULL, 4, 4, 3),
+    ('Avaliação', 1, NULL, 5, 5, 3),
+    ('Avaliação', 3, NULL, 1, 1, 4),
+    ('Avaliação', 2, NULL, 2, 2, 4),
+    ('Avaliação', 4, NULL, 3, 3, 4),
+    ('Avaliação', 5, NULL, 4, 4, 4),
+    ('Avaliação', 3, NULL, 5, 5, 4),
+    ('Avaliação', 2, NULL, 1, 1, 5),
+    ('Avaliação', 4, NULL, 2, 2, 5),
+    ('Avaliação', 3, NULL, 3, 3, 5),
+    ('Avaliação', 5, NULL, 4, 4, 5),
+    ('Avaliação', 2, NULL, 5, 5, 5);
