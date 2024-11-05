@@ -17,7 +17,7 @@ CREATE TABLE partida(
 
 CREATE TABLE participa(
     id_equipe VARCHAR(30) REFERENCES equipe(nome),
-    id_partida INT REFERENCES participa(id_partida),
+    id_partida INT REFERENCES partida(id_partida),
     data DATE,
     local VARCHAR(20),
     PRIMARY KEY (id_equipe, id_partida)
@@ -27,8 +27,7 @@ CREATE TABLE joga(
     id_joga INTEGER PRIMARY KEY AUTOINCREMENT,
     id_jogador INT REFERENCES jogador(id_jogador),
     id_partida INT REFERENCES partida(id_partida),
-    gol INT,
-    PRIMARY KEY (id_partida,id_jogador, id_joga)
+    gol INT
 );
 
 CREATE TABLE cartao(
@@ -153,3 +152,234 @@ SELECT * FROM partida;
 SELECT * FROM participa;
 SELECT * FROM joga;
 SELECT * FROM cartao;
+
+
+
+--insira 4 equipes
+INSERT INTO equipe (nome)
+VALUES
+    ('Equipe A'),
+    ('Equipe B'),
+    ('Equipe C'),
+    ('Equipe D');
+
+--cadastre 48 jogadores, com nome e data de nascimento apenas
+INSERT INTO jogador (nome, data)
+VALUES
+    ('Jogador 1', '1990-01-01'),
+    ('Jogador 2', '1991-02-01'),
+    ('Jogador 3', '1992-03-01'),
+    ('Jogador 4', '1993-04-01'),
+    ('Jogador 5', '1994-05-01'),
+    ('Jogador 6', '1995-06-01'),
+    ('Jogador 7', '1996-07-01'),
+    ('Jogador 8', '1997-08-01'),
+    ('Jogador 9', '1998-09-01'),
+    ('Jogador 10', '1999-10-01'),
+    ('Jogador 11', '2000-11-01'),
+    ('Jogador 12', '1990-12-01'),
+    ('Jogador 13', '1991-01-01'),
+    ('Jogador 14', '1992-02-01'),
+    ('Jogador 15', '1993-03-01'),
+    ('Jogador 16', '1994-04-01'),
+    ('Jogador 17', '1995-05-01'),
+    ('Jogador 18', '1996-06-01'),
+    ('Jogador 19', '1997-07-01'),
+    ('Jogador 20', '1998-08-01'),
+    ('Jogador 21', '1999-09-01'),
+    ('Jogador 22', '2000-10-01'),
+    ('Jogador 23', '1990-11-01'),
+    ('Jogador 24', '1991-12-01'),
+    ('Jogador 25', '1992-01-01'),
+    ('Jogador 26', '1993-02-01'),
+    ('Jogador 27', '1994-03-01'),
+    ('Jogador 28', '1995-04-01'),
+    ('Jogador 29', '1996-05-01'),
+    ('Jogador 30', '1997-06-01'),
+    ('Jogador 31', '1998-07-01'),
+    ('Jogador 32', '1999-08-01'),
+    ('Jogador 33', '2000-09-01'),
+    ('Jogador 34', '1990-10-01'),
+    ('Jogador 35', '1991-11-01'),
+    ('Jogador 36', '1992-12-01'),
+    ('Jogador 37', '1993-01-01'),
+    ('Jogador 38', '1994-02-01'),
+    ('Jogador 39', '1995-03-01'),
+    ('Jogador 40', '1996-04-01'),
+    ('Jogador 41', '1997-05-01'),
+    ('Jogador 42', '1998-06-01'),
+    ('Jogador 43', '1999-07-01'),
+    ('Jogador 44', '2000-08-01'),
+    ('Jogador 45', '1990-09-01'),
+    ('Jogador 46', '1991-10-01'),
+    ('Jogador 47', '1992-11-01'),
+    ('Jogador 48', '1993-12-01');
+
+--desses 48 Vincule 12 jogadores para cada equipe
+UPDATE jogador SET id_equipe = 'Equipe A' WHERE id_jogador BETWEEN 1 AND 12;
+UPDATE jogador SET id_equipe = 'Equipe B' WHERE id_jogador BETWEEN 13 AND 24;
+UPDATE jogador SET id_equipe = 'Equipe C' WHERE id_jogador BETWEEN 25 AND 36;
+UPDATE jogador SET id_equipe = 'Equipe D' WHERE id_jogador BETWEEN 37 AND 48;
+
+--cria as partidas de ida e volta entre todas as equipes
+INSERT INTO partida (turno)
+SELECT 'I'
+FROM equipe e1
+CROSS JOIN equipe e2
+WHERE e1.nome <> e2.nome;
+
+INSERT INTO partida (turno)
+SELECT 'V'
+FROM equipe e1
+CROSS JOIN equipe e2
+WHERE e1.nome <> e2.nome;
+
+WITH partida_ids AS (
+    SELECT id_partida, ROW_NUMBER() OVER (ORDER BY id_partida) AS rn FROM partida WHERE turno = 'I'
+)
+
+INSERT INTO participa (id_equipe, id_partida, data, local)
+SELECT e1.nome, p.id_partida, '2024-01-01', 'Estadio A'
+FROM partida_ids p
+JOIN equipe e1 ON p.rn = (SELECT COUNT(*) FROM equipe e2 WHERE e1.nome <> e2.nome);
+
+WITH partida_ids_volta AS (
+    SELECT id_partida, ROW_NUMBER() OVER (ORDER BY id_partida) AS rn FROM partida WHERE turno = 'V'
+)
+
+INSERT INTO participa (id_equipe, id_partida, data, local)
+SELECT e2.nome, p.id_partida, '2024-02-01', 'Estadio B'
+FROM partida_ids_volta p
+JOIN equipe e2 ON p.rn = (SELECT COUNT(*) FROM equipe e1 WHERE e1.nome <> e2.nome);
+
+--para cada partida, relacione os 22 jogadores titulares (11 p cada equipe
+WITH partidas AS (
+    SELECT p.id_partida, p.id_equipe AS mandante, e2.nome AS visitante
+    FROM participa p
+    JOIN equipe e1 ON p.id_equipe = e1.nome
+    JOIN participa p2 ON p.id_partida = p2.id_partida
+    JOIN equipe e2 ON p2.id_equipe = e2.nome
+    WHERE e1.nome <> e2.nome
+),
+titulares AS (
+    SELECT j.id_jogador, j.id_equipe,
+           ROW_NUMBER() OVER (PARTITION BY j.id_equipe ORDER BY j.id_jogador) AS rn
+    FROM jogador j
+)
+INSERT INTO joga (id_jogador, id_partida, gol)
+SELECT t.id_jogador, p.id_partida, 0
+FROM partidas p
+JOIN titulares t ON p.mandante = t.id_equipe OR p.visitante = t.id_equipe
+WHERE t.rn <= 11;
+
+--distribua p os jogadores aleatoriamente 6 cartoes amarelos em 3 partidas (escolha 1 jogador em outra partida para receber cartao vermelho
+-- Distribuição de 6 cartões amarelos em 3 partidas e 1 cartão vermelho em uma partida diferente
+WITH partidas_amarelas AS (
+    SELECT id_partida
+    FROM partida
+    ORDER BY RANDOM()
+    LIMIT 3
+),
+jogadores_amarelos AS (
+    SELECT j.id_jogador, jg.id_joga, p.id_partida
+    FROM jogador j
+    JOIN equipe e ON j.id_equipe = e.nome
+    JOIN participa p ON e.nome = p.id_equipe
+    JOIN joga jg ON j.id_jogador = jg.id_jogador
+    WHERE p.id_partida IN (SELECT id_partida FROM partidas_amarelas)
+),
+cartoes_amarelos AS (
+    SELECT id_jogador, id_partida, id_joga
+    FROM jogadores_amarelos
+    ORDER BY RANDOM()
+)
+INSERT INTO cartao (id_joga, cor)
+SELECT id_joga, 'Amarelo'
+FROM cartoes_amarelos
+LIMIT 6;
+
+WITH partida_vermelho AS (
+    SELECT id_partida
+    FROM partida
+    ORDER BY RANDOM()
+    LIMIT 1
+),
+jogadores_vermelho AS (
+    SELECT j.id_jogador, jg.id_joga
+    FROM jogador j
+    JOIN equipe e ON j.id_equipe = e.nome
+    JOIN participa p ON e.nome = p.id_equipe
+    JOIN joga jg ON j.id_jogador = jg.id_jogador
+    WHERE p.id_partida IN (SELECT id_partida FROM partida_vermelho)
+)
+INSERT INTO cartao (id_joga, cor)
+SELECT jg.id_joga, 'Vermelho'
+FROM joga jg
+JOIN jogadores_vermelho jv ON jg.id_jogador = jv.id_jogador
+ORDER BY RANDOM()
+LIMIT 1;
+
+--as partidas que nenhum jogador recebeu cartao, acabaram todas em 2 a 0 para visitante. adiciona 1 gol apra um dos dois jogadores aleatorios da equipe visitante em cada partida
+WITH partidas_sem_cartao AS (
+    SELECT p.id_partida
+    FROM partida p
+    LEFT JOIN joga j ON p.id_partida = j.id_partida
+    LEFT JOIN cartao c ON j.id_joga = c.id_joga
+    WHERE c.id_cartao IS NULL
+    GROUP BY p.id_partida
+),
+equipes_partida AS (
+    SELECT pa.id_partida, pa.id_equipe, ROW_NUMBER() OVER (PARTITION BY pa.id_partida ORDER BY RANDOM()) AS rn
+    FROM participa pa
+    WHERE pa.id_partida IN (SELECT id_partida FROM partidas_sem_cartao)
+)
+
+, equipes_visitantes AS (
+    SELECT ep.id_partida, ep.id_equipe
+    FROM equipes_partida ep
+    WHERE ep.rn = 2
+)
+UPDATE joga
+SET gol = gol + 1
+WHERE id_joga = (
+    SELECT id_joga
+    FROM joga
+    WHERE id_partida IN (SELECT id_partida FROM partidas_sem_cartao)
+    AND id_jogador IN (
+        SELECT j.id_jogador
+        FROM jogador j
+        JOIN equipes_visitantes ev ON ev.id_equipe = j.id_equipe
+        WHERE j.id_equipe = ev.id_equipe
+        ORDER BY RANDOM()
+        LIMIT 1
+    )
+);
+
+--dentre as partidas com algum cartao, todas terminaram em empate 1x1. distribua um gol para um jogador aleatorio de cada equipe
+WITH partidas_com_cartao AS (
+    SELECT DISTINCT p.id_partida
+    FROM partida p
+    JOIN joga j ON p.id_partida = j.id_partida
+    JOIN cartao c ON j.id_joga = c.id_joga
+    WHERE p.id_partida IN (
+        SELECT id_partida
+        FROM joga
+        GROUP BY id_partida
+        HAVING SUM(gol) = 1 -- Considera partidas que terminaram 1x1
+    )
+),
+jogadores_aleatorios AS (
+    SELECT j.id_jogador, e.nome AS nome_equipe, p.id_partida
+    FROM jogador j
+    JOIN equipe e ON j.id_equipe = e.nome
+    JOIN participa p ON e.nome = p.id_equipe
+    WHERE p.id_partida IN (SELECT id_partida FROM partidas_com_cartao)
+)
+INSERT INTO joga (id_jogador, id_partida, gol)
+SELECT id_jogador, id_partida, 1
+FROM (
+    SELECT id_jogador, id_partida,
+           ROW_NUMBER() OVER (PARTITION BY nome_equipe ORDER BY RANDOM()) AS rn
+    FROM jogadores_aleatorios
+) AS subquery
+WHERE rn = 1;
