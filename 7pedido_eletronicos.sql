@@ -23,7 +23,8 @@ CREATE TABLE cliente(
 );
 
 CREATE TABLE telefone(
-    numero VARCHAR(14) PRIMARY KEY,
+    id_numero INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero VARCHAR(14),
     id_cliente VARCHAR(80) REFERENCES cliente(email)
 );
 
@@ -190,3 +191,132 @@ SELECT * FROM telefone;
 SELECT * FROM endereco;
 SELECT * FROM pedido;
 SELECT * FROM contem;
+
+--cadastre 5 categorias de prod
+INSERT INTO categoria (nome, id_produto) VALUES
+('Roupas', '12345678'),
+('Calçados', '34567890'),
+('Acessórios', '45678901'),
+('Bolsas', '56789012'),
+('Jeans', '23456789');
+
+--cadastre 30 produtos entre essas categorias
+INSERT INTO produto (sku, nome, descricao, quantidade, preco) VALUES
+('12345678', 'Camiseta Branca', 'Camiseta de algodão branca', 50, 39.99),
+('12345679', 'Camiseta Preta', 'Camiseta de algodão preta', 45, 42.99),
+('12345680', 'Camisa Polo', 'Camisa polo masculina', 30, 59.99),
+('12345681', 'Blusa de Frio', 'Blusa de frio feminina', 25, 79.99),
+('12345682', 'Casaco', 'Casaco impermeável', 15, 129.99),
+('23456789', 'Tênis Nike', 'Tênis esportivo Nike', 40, 299.90),
+('23456790', 'Tênis Adidas', 'Tênis esportivo Adidas', 35, 279.90),
+('23456791', 'Sapatênis', 'Sapatênis casual masculino', 20, 99.90),
+('23456792', 'Bota Couro', 'Bota de couro masculina', 18, 249.90),
+('23456793', 'Sandália Feminina', 'Sandália feminina casual', 60, 89.90),
+('34567890', 'Relógio Digital', 'Relógio digital com pulseira de silicone', 30, 199.90),
+('34567891', 'Pulseira de Couro', 'Pulseira masculina de couro', 50, 59.99),
+('34567892', 'Óculos de Sol', 'Óculos de sol modelo aviador', 40, 149.90),
+('34567893', 'Cinto Masculino', 'Cinto de couro masculino', 70, 79.90),
+('34567894', 'Cachecol', 'Cachecol de lã', 25, 39.99),
+('45678901', 'Bolsa Feminina', 'Bolsa feminina de couro', 40, 149.90),
+('45678902', 'Mochila Escolar', 'Mochila escolar de lona', 35, 89.90),
+('45678903', 'Bolsa de Viagem', 'Bolsa grande para viagem', 20, 199.90),
+('45678904', 'Carteira Masculina', 'Carteira de couro masculina', 50, 49.90),
+('45678905', 'Bolsa de Mão', 'Bolsa de mão feminina elegante', 30, 159.90),
+('56789012', 'Calça Jeans Slim', 'Calça jeans slim masculina', 45, 99.90),
+('56789013', 'Calça Jeans Feminina', 'Calça jeans feminina', 30, 109.90),
+('56789014', 'Bermuda Jeans', 'Bermuda jeans masculina', 50, 69.90),
+('56789015', 'Jaqueta Jeans', 'Jaqueta jeans masculina', 20, 159.90),
+('56789016', 'Calça Jeans Escura', 'Calça jeans escura masculina', 25, 119.90),
+('12345683', 'Blusa Feminina', 'Blusa feminina de manga longa', 40, 49.99),
+('12345684', 'Camiseta Estampada', 'Camiseta estampada', 60, 34.99),
+('12345685', 'Jaqueta de Couro', 'Jaqueta de couro feminina', 15, 199.90),
+('12345686', 'Casaco de Inverno', 'Casaco de inverno masculino', 20, 229.90),
+('12345687', 'Regata', 'Regata masculina', 70, 29.99),
+('23456794', 'Tênis Casual', 'Tênis casual confortável', 50, 139.90),
+('23456795', 'Chinelo', 'Chinelo de dedo masculino', 80, 19.90),
+('23456796', 'Bota Feminina', 'Bota feminina de cano curto', 25, 169.90),
+('23456797', 'Sapatênis Casual', 'Sapatênis casual feminino', 30, 129.90),
+('23456798', 'Tênis Converse', 'Tênis Converse All Star', 40, 199.90),
+('34567895', 'Boné', 'Boné de aba reta', 60, 29.90),
+('34567896', 'Relógio de Pulso', 'Relógio de pulso modelo clássico', 45, 169.90),
+('34567897', 'Bracelete', 'Bracelete de metal', 50, 49.90),
+('34567898', 'Colar Masculino', 'Colar masculino de aço inoxidável', 40, 79.90),
+('34567899', 'Meia de Algodão', 'Meia de algodão confortável', 100, 9.90),
+('45678906', 'Bolsa Tiracolo', 'Bolsa tiracolo feminina', 30, 89.90),
+('45678907', 'Mochila de Couro', 'Mochila de couro feminina', 20, 189.90),
+('45678908', 'Bolsa de Ombro', 'Bolsa de ombro grande', 50, 109.90),
+('45678909', 'Bolsa de Lona', 'Bolsa de lona para o dia a dia', 60, 79.90),
+('45678910', 'Bolsa de Praia', 'Bolsa de praia grande', 25, 49.90),
+('56789017', 'Calça Jeans Skinny', 'Calça jeans skinny feminina', 50, 129.90),
+('56789018', 'Short Jeans', 'Short jeans feminino', 60, 79.90),
+('56789019', 'Jaqueta Jeans Feminina', 'Jaqueta jeans feminina', 30, 139.90),
+('56789020', 'Calça Jeans Rasgada', 'Calça jeans masculina rasgada', 35, 149.90),
+('56789021', 'Saia Jeans', 'Saia jeans feminina', 40, 89.90);
+
+--cadastre 5 clientes, cada um com pelo menos um endereco e necessariamente 2 telefones
+INSERT INTO cliente (email, rua, bairro) VALUES
+('cliente1@example.com', 'Rua A, 123', 'Bairro Central'),
+('cliente2@example.com', 'Rua B, 456', 'Bairro Leste'),
+('cliente3@example.com', 'Rua C, 789', 'Bairro Norte'),
+('cliente4@example.com', 'Rua D, 101', 'Bairro Sul'),
+('cliente5@example.com', 'Rua E, 202', 'Bairro Oeste');
+
+INSERT INTO endereco (cep, cep2, id_cliente) VALUES
+('12345678', NULL, 'cliente1@example.com'),
+('23456789', '23456790', 'cliente2@example.com'),
+('34567890', NULL, 'cliente3@example.com'),
+('45678901', '45678902', 'cliente4@example.com'),
+('56789012', NULL, 'cliente5@example.com');
+
+INSERT INTO telefone (numero, id_cliente) VALUES
+('11987654321', 'cliente1@example.com'),
+('11234567890', 'cliente1@example.com'),
+('11912345678', 'cliente2@example.com'),
+('11345678901', 'cliente2@example.com'),
+('11923456789', 'cliente3@example.com'),
+('11456789012', 'cliente3@example.com'),
+('11934567890', 'cliente4@example.com'),
+('11987654321', 'cliente4@example.com'),
+('11956789012', 'cliente5@example.com'),
+('11876543210', 'cliente5@example.com');
+
+--cadastre 3 funcionarios
+INSERT INTO funcionario (matricula, nome) VALUES ('F001', 'Carlos Silva');
+INSERT INTO funcionario (matricula, nome) VALUES ('F002', 'Ana Souza');
+INSERT INTO funcionario (matricula, nome) VALUES ('F003', 'Bruno Oliveira');
+
+--escolha 3 clientes, ssimue 2 vendas para cada um deles, a venda tera entre 1 e 3 produtos, de quantidades aleatorias. as quantidades deverao ser salvas junto com o preço unitario em cada item da venda. na venda tambem guarde a data, o meio, status (inicialmente como PEDIDO FEITO), a quantidadende produtos e valor total, utilize uma sub consulta apos cadastrasr os itens p atualizar/calcular o valor e a quantidade de produtos
+INSERT INTO pedido (status, valor_total, id_cliente, id_preparador, id_inspetor)
+VALUES ('PEDIDO FEITO', 0, 'cliente1@example.com', 'F001', 'F002');
+INSERT INTO pedido (status, valor_total, id_cliente, id_preparador, id_inspetor)
+VALUES ('PEDIDO FEITO', 0, 'cliente2@example.com', 'F002', 'F003');
+INSERT INTO pedido (status, valor_total, id_cliente, id_preparador, id_inspetor)
+VALUES ('PEDIDO FEITO', 0, 'cliente3@example.com', 'F001', 'F003');
+ALTER TABLE contem ADD COLUMN quantidade INT;
+ALTER TABLE contem ADD COLUMN preco_unitario FLOAT;
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P001', 1, 2, 10.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P003', 1, 1, 15.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P002', 2, 3, 20.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P005', 3, 1, 30.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P004', 4, 3, 5.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P003', 5, 2, 15.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P001', 5, 1, 10.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P002', 6, 2, 20.00);
+INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
+VALUES ('P004', 6, 1, 5.00);
+UPDATE pedido
+SET valor_total = (
+        SELECT SUM(quantidade * preco_unitario)
+        FROM contem
+        WHERE contem.id_pedido = pedido.id_pedido
+    )
+
+--
