@@ -13,6 +13,12 @@ CREATE TABLE evento(
     FOREIGN KEY (id_administrador) REFERENCES administrador(id_administrador)
 );
 
+CREATE TABLE conversa_participante (
+    id_conversa INTEGER REFERENCES conversa(id_grupo),
+    id_usuario INTEGER REFERENCES usuario(id_usuario),
+    PRIMARY KEY (id_conversa, id_usuario)
+);
+
 CREATE TABLE categoria(
     nome VARCHAR(20) PRIMARY KEY
 );
@@ -20,7 +26,8 @@ CREATE TABLE categoria(
 CREATE TABLE usuario(
     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
     rua VARCHAR(30),
-    bairro VARCHAR(20)
+    bairro VARCHAR(20),
+    data_nascimento DATE
 );
 
 CREATE TABLE conversa(
@@ -38,6 +45,21 @@ CREATE TABLE participa(
     id_participa INTEGER PRIMARY KEY AUTOINCREMENT,
     id_evento INT REFERENCES evento(id_evento),
     id_usuario INT REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE mensagem (
+    id_mensagem INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_grupo INT REFERENCES conversa(id_grupo),
+    id_usuario INTEGER NOT NULL,
+    conteudo TEXT,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE categoria_favorita (
+    id_usuario INT REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    categoria VARCHAR(20) REFERENCES categoria(nome),
+    PRIMARY KEY (id_usuario, categoria)
 );
 
 -- Insert de 15 linhas na tabela 'administrador'
@@ -182,23 +204,24 @@ INSERT INTO evento (nome, data, local, categoria, id_administrador) VALUES
 
 
 -- Inserir 15 clientes que possuem 2 categorias favoritas
-INSERT INTO usuario (rua, bairro) VALUES
-('Rua A, 123', 'Centro'),
-('Rua B, 456', 'Jardim das Flores'),
-('Rua C, 789', 'Vila Nova'),
-('Rua D, 321', 'Praia'),
-('Rua E, 654', 'Montanha'),
-('Rua F, 987', 'Centro Histórico'),
-('Rua G, 159', 'Bairro Alto'),
-('Rua H, 753', 'Novo Horizonte'),
-('Rua I, 852', 'Sol Nascente'),
-('Rua J, 246', 'Recanto Verde'),
-('Rua K, 135', 'Jardim Botânico'),
-('Rua L, 864', 'Parque da Cidade'),
-('Rua M, 951', 'Estação'),
-('Rua N, 357', 'Vila dos Pinheiros'),
-('Rua O, 159', 'Lagoa'),
-('Rua P, 753', 'São Miguel');
+INSERT INTO usuario (rua, bairro, data_nascimento) VALUES
+('Rua A, 123', 'Centro', '1990-05-10'),
+('Rua B, 456', 'Jardim das Flores', '1985-03-20'),
+('Rua C, 789', 'Vila Nova', '2000-08-15'),
+('Rua D, 321', 'Praia', '1978-12-25'),
+('Rua E, 654', 'Montanha', '1965-02-05'),
+('Rua F, 987', 'Centro Histórico', '1992-07-30'),
+('Rua G, 159', 'Bairro Alto', '1980-09-10'),
+('Rua H, 753', 'Novo Horizonte', '2001-11-22'),
+('Rua I, 852', 'Sol Nascente', '1995-01-17'),
+('Rua J, 246', 'Recanto Verde', '1998-04-09'),
+('Rua K, 135', 'Jardim Botânico', '1982-06-30'),
+('Rua L, 864', 'Parque da Cidade', '1968-03-12'),
+('Rua M, 951', 'Estação', '1999-05-03'),
+('Rua N, 357', 'Vila dos Pinheiros', '1993-10-21'),
+('Rua O, 159', 'Lagoa', '1989-12-02'),
+('Rua P, 753', 'São Miguel', '1975-01-14');
+
 CREATE TABLE categoria_favorita (
     id_usuario INT REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     categoria VARCHAR(20) REFERENCES categoria(nome),
@@ -250,15 +273,21 @@ INSERT INTO participa (id_evento, id_usuario) VALUES
 
 
 --Insira troca de msg simples entre os que participaram em 1 dos eventos
-CREATE TABLE mensagem (
-    id_mensagem INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_grupo INT REFERENCES conversa(id_grupo),
-    conteudo TEXT,
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Você vai ao show de música no Teatro Municipal?');
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Sim, estou muito animado para isso!');
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Ótimo! Você já comprou o ingresso?');
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Ainda não, vou comprar hoje à noite.');
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Legal! Vamos tentar chegar juntos?');
-INSERT INTO mensagem (id_grupo, conteudo) VALUES (1, 'Claro! Podemos nos encontrar na entrada do teatro.');
+INSERT INTO mensagem (id_grupo, id_usuario, conteudo)
+VALUES
+(1, 1, 'Você vai ao show de música no Teatro Municipal?'),
+(1, 2, 'Sim, estou muito animado para isso!'),
+(1, 1, 'Ótimo! Você já comprou o ingresso?'),
+(1, 2, 'Ainda não, vou comprar hoje à noite.'),
+(1, 1, 'Legal! Vamos tentar chegar juntos?'),
+(1, 2, 'Claro! Podemos nos encontrar na entrada do teatro.'),
+(1, 1, 'Vamos combinar o horário de chegada?'),
+(1, 2, 'Que tal 19h30? Assim dá tempo de pegar um lugar bom.'),
+(2, 3, 'Você vai à palestra sobre tecnologia na quarta-feira?'),
+(2, 4, 'Sim, estou super interessado nos tópicos sobre IA!'),
+(2, 3, 'Legal! Eu também. Já se inscreveu?'),
+(2, 4, 'Ainda não. Vou fazer isso hoje à noite.'),
+(2, 3, 'Combinado. Vamos juntos então?'),
+(2, 4, 'Claro! Vou te avisar quando fizer a inscrição.'),
+(2, 3, 'Quando for a sua vez de comprar, avisa que compramos juntos.'),
+(2, 4, 'Perfeito! Vou te avisar logo, então.');

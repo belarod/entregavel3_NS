@@ -58,4 +58,4 @@ INNER JOIN meta m ON f.id_meta = m.id_meta
 INNER JOIN categoria c ON m.id_categoria = c.id_categoria
 LEFT JOIN venda v ON f.id_funcionario = v.id_funcionario AND v.id_categoria = m.id_categoria
 GROUP BY f.nome, c.nome
-HAVING SUM(v.quantidade) < m.quantidade
+HAVING SUM(v.quantidade) < m.quantidade;

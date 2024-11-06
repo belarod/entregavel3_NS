@@ -9,5 +9,6 @@
     <file url="file://$PROJECT_DIR$/6camp_futebol.sql" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/7pedido_eletronicos.sql" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/consultasE3/consulta1META_BANCO.sql" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/consultasE3/consulta2EVT_SOCIAIS.sql" dialect="SQLite" />
   </component>
 </project>
