@@ -10,31 +10,40 @@ CREATE TABLE gestor(
     nome VARCHAR(30)
 );
 
-CREATE TABLE venda(
+CREATE TABLE venda (
     id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
     tipo VARCHAR(20),
-    quantidade INT CHECK ( quantidade>0 ),
+    quantidade INT CHECK (quantidade > 0),
     id_funcionario INT,
-    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+    id_categoria INT,
+    data DATE,
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario),
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
 );
 
-CREATE TABLE meta(
+CREATE TABLE meta (
     id_meta INTEGER PRIMARY KEY AUTOINCREMENT,
-    quantidade_seguro INT,
-    quantidade_conta INT,
-    quantidade_financiamento INT,
-    quantidade_emprestimo INT,
+    quantidade INT,
     id_funcionario INT,
+    id_categoria INT,
     data DATE,
-    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario),
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria) -- relação com categoria
 );
 
 CREATE TABLE avalia(
     id_meta INT,
     id_gestor INT,
-    PRIMARY KEY (id_meta, id_gestor),
+    data DATE,
+    nota_final INT,
+    PRIMARY KEY (id_meta),
     FOREIGN KEY (id_meta) REFERENCES meta(id_meta),
     FOREIGN KEY (id_gestor) REFERENCES gestor(id_gestor)
+);
+
+CREATE TABLE categoria (
+    id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome VARCHAR(30) NOT NULL UNIQUE
 );
 
 -- Insert de 15 linhas na tababela 'funcionario'
@@ -84,24 +93,6 @@ INSERT INTO venda (tipo, quantidade, id_funcionario) VALUES ('Financiamento', 60
 INSERT INTO venda (tipo, quantidade, id_funcionario) VALUES ('Empréstimo', 35, 8);
 INSERT INTO venda (tipo, quantidade, id_funcionario) VALUES ('Seguro', 10, 9);
 INSERT INTO venda (tipo, quantidade, id_funcionario) VALUES ('Conta', 45, 10);
-
--- Insert de 15 linhas na tabela 'meta'
-
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (10, 5, 3, 2, 1);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (8, 7, 4, 3, 2);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (12, 6, 5, 4, 3);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (9, 8, 6, 5, 4);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (11, 4, 7, 6, 5);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (7, 9, 8, 7, 6);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (10, 5, 9, 8, 7);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (6, 10, 10, 9, 8);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (8, 6, 11, 10, 9);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (12, 8, 12, 11, 10);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (9, 7, 13, 12, 11);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (11, 5, 14, 13, 12);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (7, 9, 15, 14, 13);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (10, 8, 16, 15, 14);
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario) VALUES (8, 6, 17, 16, 15);
 
 -- Insert de 10 linhas na tabela 'avalia'
 
@@ -170,48 +161,77 @@ ALTER TABLE meta ADD COLUMN id_categoria INT REFERENCES categoria(id_categoria);
 
 
 -- Inserir metas para cada funcionário (passei lista de 10 funcionarios)
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario, id_categoria)
+INSERT INTO meta (quantidade, id_funcionario, id_categoria, data)
 VALUES
-(10 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 1, 1),  -- Funcionário 1
-(8 + ABS(RANDOM() % 10), 6 + ABS(RANDOM() % 10), 4 + ABS(RANDOM() % 10), 1 + ABS(RANDOM() % 10), 1, 2),  -- Funcionário 2
-(15 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 7 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 2, 3),  -- Funcionário 3
-(20 + ABS(RANDOM() % 10), 10 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 0 + ABS(RANDOM() % 10), 3, 4),  -- Funcionário 4
-(25 + ABS(RANDOM() % 10), 15 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 4, 1),  -- Funcionário 5
-(5 + ABS(RANDOM() % 10), 9 + ABS(RANDOM() % 10), 6 + ABS(RANDOM() % 10), 4 + ABS(RANDOM() % 10), 5, 2),  -- Funcionário 6
-(30 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 1 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 6, 3),  -- Funcionário 7
-(12 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 9 + ABS(RANDOM() % 10), 1 + ABS(RANDOM() % 10), 7, 4),  -- Funcionário 8
-(9 + ABS(RANDOM() % 10), 3 + ABS(RANDOM() % 10), 8 + ABS(RANDOM() % 10), 0 + ABS(RANDOM() % 10), 8, 1),  -- Funcionário 9
-(14 + ABS(RANDOM() % 10), 6 + ABS(RANDOM() % 10), 2 + ABS(RANDOM() % 10), 5 + ABS(RANDOM() % 10), 9, 2);  -- Funcionário 10
+(100, 16, 1, '2024-11-01'), (150, 16, 2, '2024-11-01'), (200, 16, 3, '2024-11-01'), (250, 16, 4, '2024-11-01'),
+(100, 17, 1, '2024-11-01'), (150, 17, 2, '2024-11-01'), (200, 17, 3, '2024-11-01'), (250, 17, 4, '2024-11-01'),
+(100, 18, 1, '2024-11-01'), (150, 18, 2, '2024-11-01'), (200, 18, 3, '2024-11-01'), (250, 18, 4, '2024-11-01'),
+(100, 19, 1, '2024-11-01'), (150, 19, 2, '2024-11-01'), (200, 19, 3, '2024-11-01'), (250, 19, 4, '2024-11-01'),
+(100, 20, 1, '2024-11-01'), (150, 20, 2, '2024-11-01'), (200, 20, 3, '2024-11-01'), (250, 20, 4, '2024-11-01'),
+(100, 21, 1, '2024-11-01'), (150, 21, 2, '2024-11-01'), (200, 21, 3, '2024-11-01'), (250, 21, 4, '2024-11-01'),
+(100, 22, 1, '2024-11-01'), (150, 22, 2, '2024-11-01'), (200, 22, 3, '2024-11-01'), (250, 22, 4, '2024-11-01'),
+(100, 23, 1, '2024-11-01'), (150, 23, 2, '2024-11-01'), (200, 23, 3, '2024-11-01'), (250, 23, 4, '2024-11-01'),
+(100, 24, 1, '2024-11-01'), (150, 24, 2, '2024-11-01'), (200, 24, 3, '2024-11-01'), (250, 24, 4, '2024-11-01'),
+(100, 25, 1, '2024-11-01'), (150, 25, 2, '2024-11-01'), (200, 25, 3, '2024-11-01'), (250, 25, 4, '2024-11-01');
 
 
 
 --Insira a quantidade vendida de cada meta de cada colaborador. Data e quantidade pode ser preenchida aleatoriamente (mas deve ser antes de novembro)
-ALTER TABLE meta ADD COLUMN data DATE;
-INSERT INTO meta (quantidade_seguro, quantidade_conta, quantidade_financiamento, quantidade_emprestimo, id_funcionario, data) VALUES
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 1, '2023-10-01'),  -- Alice Silva
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 2, '2023-10-02'),  -- Bruno Santos
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 3, '2023-10-03'),  -- Carlos Oliveira
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 4, '2023-10-04'),  -- Daniela Costa
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 5, '2023-10-05'),  -- Eduardo Lima
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 6, '2023-10-06'),  -- Fernanda Alves
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 7, '2023-10-07'),  -- Gabriel Pereira
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 8, '2023-10-08'),  -- Helena Martins
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 9, '2023-10-09'),  -- Igor Souza
-(ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), ROUND(RANDOM() % 100), 10, '2023-10-10');  -- Juliana Mendes
+INSERT INTO venda (tipo, quantidade, id_funcionario, id_categoria, data)
+VALUES
+('Venda', 80, 16, 1, '2024-09-12'), ('Venda', 120, 16, 2, '2024-09-15'), ('Venda', 180, 16, 3, '2024-09-18'), ('Venda', 220, 16, 4, '2024-10-05'),
+('Venda', 90, 17, 1, '2024-09-14'), ('Venda', 130, 17, 2, '2024-09-17'), ('Venda', 170, 17, 3, '2024-09-22'), ('Venda', 210, 17, 4, '2024-10-03'),
+('Venda', 110, 18, 1, '2024-09-10'), ('Venda', 140, 18, 2, '2024-09-13'), ('Venda', 190, 18, 3, '2024-09-20'), ('Venda', 230, 18, 4, '2024-10-08'),
+('Venda', 95, 19, 1, '2024-09-16'), ('Venda', 125, 19, 2, '2024-09-19'), ('Venda', 160, 19, 3, '2024-09-23'), ('Venda', 210, 19, 4, '2024-10-07'),
+('Venda', 105, 20, 1, '2024-09-11'), ('Venda', 135, 20, 2, '2024-09-14'), ('Venda', 175, 20, 3, '2024-09-18'), ('Venda', 225, 20, 4, '2024-10-02'),
+('Venda', 115, 21, 1, '2024-09-12'), ('Venda', 145, 21, 2, '2024-09-16'), ('Venda', 190, 21, 3, '2024-09-21'), ('Venda', 235, 21, 4, '2024-10-09'),
+('Venda', 100, 22, 1, '2024-09-14'), ('Venda', 130, 22, 2, '2024-09-17'), ('Venda', 180, 22, 3, '2024-09-22'), ('Venda', 220, 22, 4, '2024-10-04'),
+('Venda', 120, 23, 1, '2024-09-13'), ('Venda', 150, 23, 2, '2024-09-16'), ('Venda', 190, 23, 3, '2024-09-20'), ('Venda', 240, 23, 4, '2024-10-06'),
+('Venda', 110, 24, 1, '2024-09-18'), ('Venda', 140, 24, 2, '2024-09-21'), ('Venda', 200, 24, 3, '2024-09-25'), ('Venda', 250, 24, 4, '2024-10-01'),
+('Venda', 125, 25, 1, '2024-09-20'), ('Venda', 160, 25, 2, '2024-09-23'), ('Venda', 210, 25, 3, '2024-09-27'), ('Venda', 260, 25, 4, '2024-10-10');
 
 
 
 --Insira uma nota p cada meta, adicionando uma nota de 0 a 100 calculada automaticamente c base na qntd vendida e obj da meta. data da avaliaçao tb deve ser armazenada (aleatoria, porem em janeiro)
-ALTER TABLE avalia
-ADD data DATE;
-INSERT INTO avalia (id_meta, id_gestor, data)
-SELECT
-    m.id_meta,
-    g.id_gestor,
-    DATE('2024-01-01', '+' || ABS(RANDOM() % 31) || ' days') AS data  -- Data aleatória em janeiro
-FROM
-    meta m
-JOIN
-    gestor g ON g.id_gestor = (ABS(RANDOM() % (SELECT COUNT(*) FROM gestor)) + 1)  -- Seleciona um gestor aleatório
-ORDER BY RANDOM()
-LIMIT 15;
+INSERT INTO avalia (id_meta, id_gestor, data, nota_final)
+VALUES
+    (1, 1, '2024-01-10', ABS(RANDOM()) % 101),
+    (2, 1, '2024-01-12', ABS(RANDOM()) % 101),
+    (3, 1, '2024-01-14', ABS(RANDOM()) % 101),
+    (4, 1, '2024-01-15', ABS(RANDOM()) % 101),
+    (5, 2, '2024-01-11', ABS(RANDOM()) % 101),
+    (6, 2, '2024-01-13', ABS(RANDOM()) % 101),
+    (7, 2, '2024-01-14', ABS(RANDOM()) % 101),
+    (8, 2, '2024-01-16', ABS(RANDOM()) % 101),
+    (9, 3, '2024-01-12', ABS(RANDOM()) % 101),
+    (10, 3, '2024-01-13', ABS(RANDOM()) % 101),
+    (11, 3, '2024-01-15', ABS(RANDOM()) % 101),
+    (12, 3, '2024-01-16', ABS(RANDOM()) % 101),
+    (13, 4, '2024-01-09', ABS(RANDOM()) % 101),
+    (14, 4, '2024-01-11', ABS(RANDOM()) % 101),
+    (15, 4, '2024-01-13', ABS(RANDOM()) % 101),
+    (16, 4, '2024-01-14', ABS(RANDOM()) % 101),
+    (17, 5, '2024-01-12', ABS(RANDOM()) % 101),
+    (18, 5, '2024-01-14', ABS(RANDOM()) % 101),
+    (19, 5, '2024-01-15', ABS(RANDOM()) % 101),
+    (20, 5, '2024-01-17', ABS(RANDOM()) % 101),
+    (21, 6, '2024-01-10', ABS(RANDOM()) % 101),
+    (22, 6, '2024-01-11', ABS(RANDOM()) % 101),
+    (23, 6, '2024-01-13', ABS(RANDOM()) % 101),
+    (24, 6, '2024-01-15', ABS(RANDOM()) % 101),
+    (25, 7, '2024-01-09', ABS(RANDOM()) % 101),
+    (26, 7, '2024-01-10', ABS(RANDOM()) % 101),
+    (27, 7, '2024-01-12', ABS(RANDOM()) % 101),
+    (28, 7, '2024-01-14', ABS(RANDOM()) % 101),
+    (29, 8, '2024-01-13', ABS(RANDOM()) % 101),
+    (30, 8, '2024-01-14', ABS(RANDOM()) % 101),
+    (31, 8, '2024-01-15', ABS(RANDOM()) % 101),
+    (32, 8, '2024-01-17', ABS(RANDOM()) % 101),
+    (33, 9, '2024-01-11', ABS(RANDOM()) % 101),
+    (34, 9, '2024-01-13', ABS(RANDOM()) % 101),
+    (35, 9, '2024-01-15', ABS(RANDOM()) % 101),
+    (36, 9, '2024-01-16', ABS(RANDOM()) % 101),
+    (37, 10, '2024-01-10', ABS(RANDOM()) % 101),
+    (38, 10, '2024-01-12', ABS(RANDOM()) % 101),
+    (39, 10, '2024-01-14', ABS(RANDOM()) % 101),
+    (40, 10, '2024-01-16', ABS(RANDOM()) % 101);
