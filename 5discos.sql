@@ -1,7 +1,8 @@
 CREATE TABLE album(
     id_album INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(30),
-    categoria VARCHAR(20)
+    categoria VARCHAR(20),
+    tipo_midia VARCHAR(20)
 );
 
 CREATE TABLE review(
