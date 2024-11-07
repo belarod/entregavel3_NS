@@ -312,12 +312,13 @@ INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
 VALUES ('P002', 6, 2, 20.00);
 INSERT INTO contem (id_produto, id_pedido, quantidade, preco_unitario)
 VALUES ('P004', 6, 1, 5.00);
+
 UPDATE pedido
 SET valor_total = (
         SELECT SUM(quantidade * preco_unitario)
         FROM contem
         WHERE contem.id_pedido = pedido.id_pedido
-    )
+    );
 
 --altere o status de 1 pedido de cada cliente para EM SEPARAÇAO. vincule um funcionario para fazer a separacao dos produtos, e um para ser o inspetor
 UPDATE pedido
@@ -329,7 +330,7 @@ WHERE id_cliente = 'cliente@example.com'
   AND status != 'EM SEPARAÇÃO';
 
  --altere o status de 1 pedido para cancelado
- UPDATE pedido
+UPDATE pedido
 SET
     status = 'CANCELADO'
 WHERE id_cliente = 'cliente@example.com'
